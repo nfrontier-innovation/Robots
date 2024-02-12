@@ -21,7 +21,7 @@ class FrankxPostProcessor
 
         // MultiFile warning
         if (program.MultiFileIndices.Count > 1)
-            program.Warnings.Add("Multi-file input not supported on Franka Emika robots!");
+            program.Warnings.Add("Multi-file input not supported on Franka Emika robots");
     }
 
     List<string> Program()
