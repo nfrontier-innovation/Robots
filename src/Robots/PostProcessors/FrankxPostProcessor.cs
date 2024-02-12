@@ -21,7 +21,7 @@ class FrankxPostProcessor
 
         // MultiFile warning
         if (program.MultiFileIndices.Count > 1)
-            program.Warnings.Add("Multi-file input not supported on Franka Emika robots");
+            program.Warnings.Add("Multi-file input not supported on Franka Emika robots!");
     }
 
     List<string> Program()
@@ -34,7 +34,7 @@ from frankx import Affine, Robot, JointMotion, PathMotion, WaypointMotion, Waypo
 
 def program():
   parser = ArgumentParser()
-  parser.add_argument('--host', default='172.16.0.2', help='FCI IP of the robot')
+  parser.add_argument('--host', default='172.16.0.2', help='FCI IP of the target robotX')
   args = parser.parse_args()
   robot = Robot(args.host)
   robot.set_default_behavior()
@@ -80,7 +80,7 @@ def program():
         Tool? currentTool = null;
         double? currentAccel = null;
 
-        // Targets
+        // Targets XXXX
 
         foreach (var systemTarget in _program.Targets)
         {
@@ -141,7 +141,7 @@ def program():
                     currentTool = target.Tool;
                     currentMotion = motion;
 
-                    code.Add($"  motion = WaypointMotion([");
+                    code.Add($"  motion = PathMotion([");
 
                     switch (currentMotion)
                     {
@@ -172,7 +172,7 @@ def program():
                             ? $", {target.External[0]:0.#####}" : "";
 
                 var zone = target.Zone.Distance.ToMeters();
-                code.Add($"    Waypoint({Affine(plane)}, {speed:0.#####}, {target.Zone.Name}{elbow}),");
+                code.Add($"    {Affine(plane)},");
             }
 
             var afterCommands = programTarget.Commands.Where(c => !c.RunBefore);
@@ -204,7 +204,7 @@ program()
             if (currentMotion is null)
                 throw new ArgumentNullException(nameof(currentMotion));
 
-            code.Add($"  ])");
+            code.Add($"  ], blend_max_distance=0.05)");
             code.Add($"  robot.move({currentTool.Name}, motion, data)");
             currentMotion = null;
         }
